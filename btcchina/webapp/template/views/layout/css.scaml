@@ -1,0 +1,29 @@
+- if (isIe(req))
+  /[if IE]
+    %meta(http-equiv="Pragma" content="no-cache")
+    %meta(http-equiv="Expires" content="0")
+  /[if lt IE 9]
+    %script(src={assetsUrl("js/html5.js")})
+  /[if IE 6]
+    %script
+      window.isIe = { "version": 6 };
+  /[if IE 7]
+    %script
+      window.isIe = { "version": 7 };
+  /[if IE 8]
+    %script
+      window.isIe = { "version": 8 };
+
+
+-if (isDev)
+  - render("/less_include.ssp")
+  %script(src={assetsUrl("js/less-1.3.0.min.js")})
+-else
+  %link(rel="stylesheet" media="screen" href={assetsUrl("compiled.css")})
+
+- if (isIe(req))
+  /[if IE]
+    -if (isDev)
+      %link(rel="stylesheet" media="screen" href={assetsUrl("css/ie.css")})
+    -else
+      %link(rel="stylesheet" media="screen" href={assetsUrl("compiled.ie.css")})

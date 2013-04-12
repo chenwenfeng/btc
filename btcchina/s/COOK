@@ -1,0 +1,10 @@
+scala_lib(
+  name = "s",
+  srcs = [
+    "S.scala",
+  ],
+  deps = [
+    "//quasars/webframework/unfiltered/netty/async:route",
+    "//quasars/webframework/unfiltered/netty/async:with_s_base",
+  ],
+)

@@ -1,0 +1,36 @@
+scala_lib(
+  name = "http_route",
+  srcs = [
+    "Route.scala",
+    "ErrorHandler.scala",
+    "HttpRoute.scala",
+  ],
+  deps = [
+    "//btc/btcchina/controllers:controllers",
+    "//btc/btcchina:helper",
+    "//btc/btcchina/s:s",
+    "//btc/btcchina:setting",
+    "//quasars/app:base_app",
+    "//quasars/util/auth:auth_helper",
+    "//quasars/webframework/unfiltered/netty/async:route",
+    "//quasars/webframework/unfiltered/request:params",
+    "//quasars/webframework/unfiltered:scalate_support",
+    "//quasars/webframework/unfiltered:route_scalate",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty-server_2.10/0.6.7:unfiltered-netty-server_2.10-0.6.7",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty-uploads_2.10/0.6.7:unfiltered-netty-uploads_2.10-0.6.7",
+  ],
+)
+
+scala_lib(
+  name = "websocket_route",
+  srcs = [
+    "WebsocketRoute.scala",
+  ],
+  deps = [
+    "//btc/btcchina/websocket:websocket_manager_actor",
+    "//quasars/webframework/websocket:base_websocket_manager_actor",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty-websockets_2.10/0.6.7:unfiltered-netty-websockets_2.10-0.6.7",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty_2.10/0.6.7:unfiltered-netty_2.10-0.6.7",
+    "//thirdparty/mvn/net/databinder/unfiltered_agents_2.10/0.6.7:unfiltered-agents_2.10-0.6.7",
+  ],
+)

@@ -1,0 +1,27 @@
+- attributes("title") = "all unverified users"
+-@ var users: List[com.imd.user.data.scalawrapper.UserInfo]
+
+#list-page
+  %table
+    %tr
+      %th email
+      %th mobile
+      %th username
+      %th realname
+      %th emailVerified
+      %th mobileVerified
+      %th licenseIdVerified
+      %th baseInfoVerified
+      %th deal
+    - for (u <- users)
+      %tr
+        %td #{u.email.getOrElse("")}
+        %td #{u.mobile.getOrElse("")}
+        %td #{u.username.getOrElse("")}
+        %td #{u.realname.getOrElse("")}
+        %td #{u.userVerifyInfo.flatMap(_.emailVerified).getOrElse(false)}
+        %td #{u.userVerifyInfo.flatMap(_.mobileVerified).getOrElse(false)}
+        %td #{u.userVerifyInfo.flatMap(_.licenseIdVerified).getOrElse(false)}
+        %td #{u.userVerifyInfo.flatMap(_.baseInfoVerified).getOrElse(false)}
+        %td
+          %a(href={verifyUrl(u.id.get)}) go verify

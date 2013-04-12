@@ -1,0 +1,57 @@
+include("//cookrules/css")
+
+ordered_less_files = labels([
+  "css/reset.less",
+  "css/layout.less",
+  "css/main.less",
+])
+other_less_files = glob("css/*/*.less")
+
+def mergeCss(name) {
+
+  buildCmds = [ "%s %s | sed \"s/\\.\\.\\///\" >> all.css" % [ lesscPath.file, f.file ] for f in ordered_less_files ]
+  buildCmds ++= [ "%s %s | sed \"s/\\.\\.\\/\\.\\.\\///\" >> all.css" % [ lesscPath.file, f.file ] for f in other_less_files ]
+
+  genrule(
+    name = name,
+    inputs = ordered_less_files ++ other_less_files,
+    outputType = "css_source",
+    cmds = buildCmds,
+  )
+}
+
+genLessIncludeSsp(
+  name = "gen_less_include_ssp",
+  inputs = ordered_less_files ++ other_less_files,
+  headers = [
+    "<%@ import val helper: btc.btcchina.Helper %>",
+  ],
+)
+mergeCss("merge_css")
+
+renameAndCompileCss(
+  name = "rename_and_compile_css",
+  input = label(":merge_css").outputDir + "/all.css",
+  output = "compiled.css",
+  map = "cssmap.js",
+  deps = [
+    ":merge_css",
+  ],
+)
+
+cssMap2Scala(
+  name = "cssmap2scala",
+  package = "btc.btcchina",
+  className = "CssMap",
+  input = label(":rename_and_compile_css").outputDir + "/cssmap.js",
+  deps = [
+    ":rename_and_compile_css",
+  ],
+)
+
+scala_lib(
+  name = "cssmap",
+  srcs = [
+    ":cssmap2scala",
+  ],
+)

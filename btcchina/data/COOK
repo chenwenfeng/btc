@@ -1,0 +1,15 @@
+thrift_scala_lib(
+  name = "thrift",
+  src = "thrift.thrift",
+)
+
+scala_lib(
+  name = "data_manager",
+  srcs = [
+    "DataManager.scala",
+  ],
+  deps = [
+    ":thrift",
+    "//quasars/app/data/mongo:mongodb_support",
+  ],
+)

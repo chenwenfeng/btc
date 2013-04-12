@@ -1,0 +1,34 @@
+-@ var body: String
+-@ var title: String
+-@ var jsonData: String = "{}"
+!!! 5
+%html
+  %head
+    %meta(charset="utf-8")
+    %title
+      = title + " - i-MD User Validation"
+    - render("/layout/css.scaml")
+  %body
+    = filterClassNames
+      #body-container
+        - render("/layout/header.scaml")
+        #content
+          != body
+        - render("/layout/footer.scaml")
+      -# javascripts
+      -if (isDev)
+        %script(src={assetsUrl("js/closure/goog/base.js")})
+        %script(src={assetsUrl("js/imd-deps.js")})
+        %script
+          ! goog.require('imd.user.uservalidation.launcher.Launcher');
+      -else
+        %script(src={assetsUrl("compiled.js")})
+      -# js init
+      %script
+        ! var data = #{jsonData};
+        ! var config = {
+        !   domainAssetsUrl: "#{domainAssetsUrl("")}"
+        ! };
+        ! (function() {
+        !   imd.user.uservalidation.launcher.Launcher.init(data);
+        ! })();

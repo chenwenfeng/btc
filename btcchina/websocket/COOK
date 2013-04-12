@@ -1,0 +1,13 @@
+scala_lib(
+  name = "websocket_manager_actor",
+  srcs = [
+    "WebsocketManagerActor.scala",
+  ],
+  deps = [
+    "//btc/btcchina/controllers:controllers",
+    "//quasars/app:base_app",
+    "//thirdparty/mvn/net/liftweb/lift-json_2.10/2.5-RC1:lift-json_2.10-2.5-RC1",
+    "//quasars/webframework/websocket:base_websocket_manager_actor",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty-websockets_2.10/0.6.7:unfiltered-netty-websockets_2.10-0.6.7",
+  ],
+)

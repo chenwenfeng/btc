@@ -1,0 +1,25 @@
+scala_lib(
+  name = "controller",
+  srcs = [
+    "Controller.scala",
+  ],
+  deps = [
+    "//btc/btcchina/data:data_manager",
+    "//btc/btcchina:helper",
+    "//btc/btcchina:setting",
+    "//btc/btcchina/util:trade_query",
+    "//btc/btcchina/data:thrift",
+    "//quasars/app:base_app",
+    "//quasars/util/thrift:convert_helper",
+    "//quasars/webframework/websocket:event_bus_message",
+    "//thirdparty/mvn/net/liftweb/lift-json_2.10/2.5-RC1:lift-json_2.10-2.5-RC1",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty-websockets_2.10/0.6.7:unfiltered-netty-websockets_2.10-0.6.7",
+  ],
+)
+
+java_lib(
+  name = "controllers",
+  deps = [
+    ":controller",
+  ],
+)

@@ -1,0 +1,137 @@
+include("//cookrules/deploy")
+include("//cookrules/scalate")
+
+scala_lib(
+  name = "setting",
+  srcs = [
+    "BtcchinaServerSetting.scala",
+  ],
+  deps = [
+    "//quasars/app/config:setting",
+  ],
+)
+
+scala_lib(
+  name = "helper",
+  srcs = [
+    "Helper.scala",
+  ],
+  deps = [
+    ":setting",
+    "//btc/btcchina/webapp/assets:cssmap",
+    "//quasars/webframework/helper:helpers",
+    "//thirdparty/mvn/net/liftweb/lift-json_2.10/2.5-RC1:lift-json_2.10-2.5-RC1",
+    "//thirdparty/mvn/net/databinder/unfiltered-netty_2.10/0.6.7:unfiltered-netty_2.10-0.6.7",
+    "//thirdparty/mvn/net/databinder/unfiltered_agents_2.10/0.6.7:unfiltered-agents_2.10-0.6.7",
+  ],
+)
+
+scala_lib(
+  name = "server",
+  srcs = [
+    "BtcchinaServer.scala",
+  ],
+  deps = [
+    ":setting",
+    "routes:http_route",
+    "routes:websocket_route",
+    "//quasars/app/data/mongo:mongodb_support",
+    "//quasars/app:netty_unfiltered_web_server_support",
+  ],
+)
+
+scalate2scala_lib_target(
+  name = "template_less_include",
+  templateHomeTarget = "webapp/assets:gen_less_include_ssp",
+  bindings = [
+    "import val helper: btc.btcchina.Helper",
+    "val req: unfiltered.netty.RequestBinding = null",
+  ],
+  deps = [
+    "routes:routes",
+  ],
+  packagePrefix = "scalatetemplate.web",
+)
+
+scalate2scala_lib(
+  name = "templates",
+  templateHome = "webapp/template/views/",
+  bindings = [
+    "import val helper: btc.btcchina.Helper",
+    "val req: unfiltered.netty.RequestBinding = null",
+  ],
+  deps = [
+    ":template_less_include",
+  ],
+  packagePrefix = "scalatetemplate.web",
+)
+
+java_bin(
+  name = "run_dev_server",
+  mainClass = "btc.btcchina.BtcchinaServer",
+  java_libs = [
+    ":server",
+  ],
+  linkRes = [
+    [ "webapp/template/views/*", "template/views/" ],
+    [ label("webapp/assets:gen_less_include_ssp").outputDir + "/*", "template/views/" ],
+    ## assets
+    [label("webapp:link_assets").outputDir + "/assets", "."],
+    [ "config", "." ],
+  ],
+  deps = [
+    "webapp:link_assets",
+    "webapp/assets:gen_less_include_ssp",
+  ],
+)
+
+java_bin(
+  name = "run_server",
+  mainClass = "btc.btcchina.BtcchinaServer",
+  java_libs = [
+    ":server",
+    ":templates",
+  ],
+  linkRes = [
+    [ "webapp/template/views/*", "template/views/" ],
+    [ label("webapp/assets:gen_less_include_ssp").outputDir + "/*", "template/views/" ],
+    ## assets
+    [label("webapp:link_assets").outputDir + "/assets", "."],
+    ["config/*", "config"],
+  ],
+  deps = [
+    "webapp:link_assets",
+  ],
+)
+
+#deploy
+jar(
+  name = "btcchina_server",
+  mainClass = "btc.btcchina.BtcchinaServer",
+  java_libs = [
+    ":server",
+    ":templates",
+  ],
+)
+
+gen_java_start_script(
+  name = "gen_btcchina_server_start_script",
+  jar = "btcchina_server.deploy.jar",
+  mainClass = "btc.btcchina.BtcchinaServer",
+)
+
+deploy(
+  name = "deploy_btcchina_server",
+  deployName = "BtcchinaServer",
+  deps = [
+    ":btcchina_server.deploy.jar",
+    ":gen_btcchina_server_start_script",
+    "webapp:assets",
+  ],
+  cp = [
+    [ label(":btcchina_server.deploy.jar").outputDir + "/*" , "." ],
+    [ "config/*", "res/config/" ],
+    [ label("webapp:assets").outputDir + "/assets", "." ],
+    [ label(":gen_btcchina_server_start_script").outputDir + "/start.sh", "." ],
+  ]
+)

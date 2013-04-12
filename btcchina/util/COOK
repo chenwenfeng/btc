@@ -1,0 +1,10 @@
+scala_lib(
+  name = "trade_query",
+  srcs = [
+    "TradeQuery.scala",
+  ],
+  deps = [
+    "//thirdparty/mvn/net/databinder/dispatch-http_2.10/0.8.9:dispatch-http_2.10-0.8.9",
+    "//thirdparty/mvn/net/databinder/dispatch-jsoup_2.10/0.8.9:dispatch-jsoup_2.10-0.8.9",
+  ],
+)

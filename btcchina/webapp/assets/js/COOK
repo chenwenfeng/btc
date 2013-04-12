@@ -1,0 +1,37 @@
+include("//quasars/js/corp/corpjs")
+include("//quasars/js/thirdparty/thirdparty")
+include("//quasars/js/gmvc/gmvcjs")
+
+closureDeps(
+  name = "gen_js_deps",
+  output_name = "btc-deps.js",
+  srcs = glob("btc/btcchina/**/*.js") ++ quasarsCorpJsSources ++ gmvcSources ++ thirdpartyJsSources,
+  deps = [
+  ],
+  root_with_prefixs = [
+    ["btc", "../../btc"],
+    quasars_corp_js_root_with_prefix,
+    thirdparty_js_root_with_prefix,
+    gmvc_root_with_prefix,
+    [closureTemplatesPath.file, "../../soy"],
+  ],
+)
+
+closureSrcs = [
+  "//btc/btcchina/webapp/assets:rename_and_compile_css",  # css rename map
+] ++ glob("btc/btcchina/**/*.js") ++ [
+] ++ quasarsCorpJsSources ++ gmvcSources ++ thirdpartyJsSources ++ closureLibrarySources ++ closureTemplateSources
+
+
+closureCompiler(
+  name = "compile_js",
+  srcs = closureSrcs,
+  entryPoint = "btc.btcchina.launcher.Launcher",
+  output = "compiled.js",
+  debug = false,
+  externs = [
+    "extern.js",
+  ],
+  deps = [
+  ],
+)

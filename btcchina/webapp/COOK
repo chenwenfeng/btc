@@ -1,0 +1,49 @@
+include("//cookrules/res")
+
+linkRes(
+  name = "link_assets",
+  linkRes = [
+    ## assets
+    ["assets/css", "assets/"],
+    ["assets/images", "assets/"],
+
+    # Closure lib
+    [closureLibraryPath.file + "/closure/goog", "assets/js/closure/"],
+    [closureTemplatesPath.file + "/soyutils_usegoog.js", "assets/js/soy/"],
+    # pxtek javascript
+    ["assets/js/btc/btcchina", "assets/js/btc/"],
+    [label("//quasars/js/corp").file + "/*", "assets/js/quasars/corp/"],
+    [label("//quasars/js/thirdparty").file, "assets/js"],
+    [label("//quasars/js/gmvc").file, "assets/js"],
+    # less (dev) javascript
+    [label("//thirdparty/js/less/less-1.3.3.min.js").file, "assets/js/"],
+    # Generated pxtek-deps.js
+    [label("assets/js:gen_js_deps").outputDir + "/btc-deps.js", "assets/js/"],
+    # Compiled css & js
+    [label("assets:rename_and_compile_css").outputDir + "/compiled.css", "assets/"],
+    [label("assets/js:compile_js").outputDir + "/compiled.js", "assets/"],
+  ],
+  deps = [
+    "assets/js:compile_js",
+    "assets/js:gen_js_deps",
+    "assets:rename_and_compile_css",
+  ],
+)
+
+cpRes(
+  name = "assets",
+  srcs = glob([
+    "assets/images/**/*",
+  ]),
+  cpRes = [
+    ## assets
+    ["assets/images", "assets/"],
+    # Compiled css & js
+    [label("assets:rename_and_compile_css").outputDir + "/compiled.css", "assets/"],
+    [label("assets/js:compile_js").outputDir + "/compiled.js", "assets/"],
+  ],
+  deps = [
+    "assets/js:compile_js",
+    "assets:rename_and_compile_css",
+  ],
+)
